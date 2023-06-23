@@ -1,6 +1,6 @@
 .form {
   gap: 2rem;
-  width: 30rem;
+  width: 35rem;
   margin-top: 4rem;
   display: flex;
   flex-direction: column;
@@ -24,4 +24,9 @@
 .submitButton {
   height: 4rem;
   font-size: 2rem;
+}
+
+.errorMessage {
+  font-size: 1.5rem;
+  color: red;
 }
