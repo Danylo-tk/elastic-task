@@ -1,58 +1,61 @@
-import { useQuery } from "react-query";
-
-type UsersCount = {
-  count: number;
-};
-
-type UsersAge = { value: number };
-
-type UserPopularName = {
-  key: string;
-  doc_count: number;
-};
-
-const fetchUsersCount = async () => {
-  const response = await fetch("http://localhost:4000/users");
-  return response.json();
-};
-
-const fetchUsersAge = async () => {
-  const response = await fetch("http://localhost:4000/users/average-age");
-  return response.json();
-};
-
-const fetchUsersPopularNames = async () => {
-  const response = await fetch("http://localhost:4000/users/top-users-names");
-  return response.json();
-};
+import { useEffect, useState } from "react";
+import styles from "./DataSection.module.css";
+import { UserPopularName, UsersAge, UsersCount } from "../types";
 
 const DataSection = () => {
-  const { data: usersCount } = useQuery<UsersCount>(
-    "usersCount",
-    fetchUsersCount
-  );
-  const { data: usersAge } = useQuery<UsersAge>("usersAge", fetchUsersAge);
-  const { data: usersPopularNames } = useQuery<UserPopularName[]>(
-    "usersNames",
-    fetchUsersPopularNames
-  );
+  const [usersCount, setUsersCount] = useState<UsersCount>();
+  const [usersAge, setUsersAge] = useState<UsersAge>();
+  const [usersPopularNames, setUsersPopularNames] =
+    useState<UserPopularName[]>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [countResponse, ageResponse, popularNamesResponse] =
+          await Promise.all([
+            fetch("http://localhost:4000/users"),
+            fetch("http://localhost:4000/users/average-age"),
+            fetch("http://localhost:4000/users/top-users-names"),
+          ]);
+
+        const countData = await countResponse.json();
+        const ageData = await ageResponse.json();
+        const popularNamesData = await popularNamesResponse.json();
+
+        setUsersCount(countData);
+        setUsersAge(ageData);
+        setUsersPopularNames(popularNamesData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchData();
+  }, [usersCount]);
 
   return (
-    <>
-      <p>
-        An average age of all <span>{usersCount?.count}</span> users is:{" "}
-        <span>{usersAge?.value}</span>
+    <div className={styles.container}>
+      <p className={styles.text}>
+        An average age of all{" "}
+        <span className={styles.boldText}>{usersCount?.count}</span> users is:{" "}
+        <span className={styles.boldText}>
+          {Math.floor(usersAge?.value ?? 0)}
+        </span>{" "}
+        years.
       </p>
 
-      <h2>Most popular names:</h2>
-      <ul>
+      <div style={{ height: "2rem" }}></div>
+
+      <h2 className={styles.boldText}>Most popular names:</h2>
+
+      <ul className={styles.namesList}>
         {usersPopularNames?.map((name, index) => (
-          <li key={index}>
+          <li key={index} className={styles.text}>
             {name.doc_count} {name.key}
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 };
 

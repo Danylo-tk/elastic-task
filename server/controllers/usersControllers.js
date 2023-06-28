@@ -47,14 +47,22 @@ const getTopPopularNames = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+  const newUser = {
+    name: req.body.name,
+    surname: req.body.surname,
+    age: req.body.age,
+  };
+
   await client.index({
     index: "users",
     document: {
-      name: req.body.name,
-      surname: req.body.surname,
-      age: req.body.age,
+      name: newUser.name,
+      surname: newUser.surname,
+      age: newUser.age,
     },
   });
+
+  res.status(200).json(newUser);
 };
 
 module.exports = {

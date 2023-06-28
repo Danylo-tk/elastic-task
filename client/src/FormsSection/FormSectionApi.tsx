@@ -3,8 +3,6 @@ import { FormSectionFormModel } from "./FormSectionLogic";
 
 const FormSectionApi = () => {
   const hadleSubmit = async (data: FormSectionFormModel) => {
-    console.table(data);
-
     const submitData = {
       name: data.name,
       surname: data.surname,

@@ -47,9 +47,11 @@ const FormSectionLogic = ({ defaultValues, onSubmit }: LogicProps) => {
 
   const handleSubmit = async (data: FormSectionFormModel) => {
     await onSubmit(data)
-      .then(() => form.reset())
+      .then(() => {
+        form.reset();
+      })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
