@@ -4,7 +4,20 @@ import { FormSectionFormModel } from "./FormSectionLogic";
 const FormSectionApi = () => {
   const hadleSubmit = async (data: FormSectionFormModel) => {
     console.table(data);
-    return fetch("");
+
+    const submitData = {
+      name: data.name,
+      surname: data.surname,
+      age: data.age,
+    };
+
+    return fetch("http://localhost:4000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(submitData),
+    });
   };
 
   const defaultValues = {
